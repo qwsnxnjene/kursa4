@@ -8,10 +8,10 @@
       <input type="text" class="search-window">
     </div>
     <div class='calendar-swipe'>
-        <div class="date">11.03</div>
+        <div class="date">{{ formattedDate }}</div>
         <img class="cal" src="../assets/calendar.svg" />
         
-        <div class="time">20:28</div>
+        <div class="time">{{ formattedTime }}</div>
     </div>
   </div>
 </template>
@@ -22,6 +22,34 @@ import CalendarSwipe from './CalendarSwipe.vue';
 export default {
   name: 'MainContent',
   components: [CalendarSwipe],
+  data() {
+    return {
+      now: new Date(),
+      updateInterval: null
+    }
+  },
+  computed: {
+    formattedDate() {
+      return this.now.toLocaleDateString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+      })
+    },
+    formattedTime() {
+      return this.now.toLocaleTimeString('ru-RU', {
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+    }
+  },
+  mounted() {
+    this.updateInterval = setInterval(() => {
+      this.now = new Date()
+    }, 1000)
+  },
+  beforeDestroy() {
+    clearInterval(this.updateInterval)
+  }
 };
 
 </script>

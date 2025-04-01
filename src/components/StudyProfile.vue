@@ -36,6 +36,23 @@
             с направлением и будем поддерживать вплоть до поступления!
         </p>
     </div>
+    <div class="input-name">
+        <p>ймя</p>
+        <input type="text" class="name-window">
+    </div>
+    <div class="input-name">
+        <p>номер телефона</p>
+        <input type="text" class="name-window">
+    </div>
+    <div class="input-name">
+        <p>email</p>
+        <input type="text" class="name-window">
+    </div>
+    <div class="ready-btn">
+      <button>
+              Готово!
+      </button>
+    </div>
   </div>
 </template>
 
@@ -122,12 +139,53 @@ export default {
   font-family: 'IF Kica';
   font-size: 60px;
   margin: 20px;
+  margin-top:100px;
 }
 
 .info-small p {
     font-family: 'LC Web';
     color: #fff;
     font-size: 20px;
-    font-weight: lighter;
 }
+
+.input-name {
+  text-align: left;
+  padding-left: 450px;
+}
+
+.input-name p {
+  font-size: 45px;
+  text-align: left;
+  margin-bottom: 5px;
+  color: #fff;
+  font-family: 'IF Kica';
+}
+
+.input-name input {
+  margin-right: -10px;
+  border-radius: 16px;
+  border: none;
+  width: 410px;
+  height: 60px;
+  box-shadow: 0 4px 4px #6A1B9A;
+  font-size: 30px;
+  font-family: 'LC Web';
+}
+
+.ready-btn {
+  text-align: left;
+  padding-left: 450px;
+  margin-top:  60px;
+}
+
+button {
+  font-size: 40px;
+  color: #fff;
+  font-family: 'IF Kica';
+  background-color: #6A1B9A;
+  border: none;
+  border-radius: 16px;
+  width: 410px;
+}
+
 </style>

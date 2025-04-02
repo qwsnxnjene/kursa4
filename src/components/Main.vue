@@ -5,27 +5,38 @@
     </div>
     <div class='search'>
       <p>Пойск<br>по ВУЗам</p>
-      <input type="text" class="search-window">
+      <input @click="performSearch" v-model="searchQuery" type="text" class="search-window">
+      <div v-if="results.length > 0" class="results-container">
+      <div 
+        v-for="(item, index) in results" 
+        :key="index"
+        class="result-item"
+      >
+        {{ item.name }}
+      </div>
     </div>
+    </div>
+    
     <div class='calendar-swipe'>
         <div class="date">{{ formattedDate }}</div>
         <img class="cal" src="../assets/calendar.svg" />
-        
         <div class="time">{{ formattedTime }}</div>
     </div>
   </div>
 </template>
 
 <script>
-import CalendarSwipe from './CalendarSwipe.vue';
+import axios from 'axios';
 
 export default {
   name: 'MainContent',
-  components: [CalendarSwipe],
   data() {
     return {
       now: new Date(),
-      updateInterval: null
+      updateInterval: null,
+      searchQuery: "",
+      results: [],
+      debounceTimer: null
     }
   },
   computed: {
@@ -49,6 +60,52 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.updateInterval)
+  },
+
+  methods: {
+    async performSearch() {
+      console.log("Отправка запроса с query:", this.searchQuery)
+      
+      if (this.searchQuery === "") {
+        this.results = []
+        return
+      }
+
+      try {
+        const response = await axios.get('/api/search', {
+          params: {
+            query: this.searchQuery
+          }
+        })
+
+        this.results = this.sortResults(response.data, this.searchQuery)
+      } catch (error) {
+        console.error('Ошибка поиска', error)
+      } 
+    },
+
+    sortResults(results, query) {
+      const lowerQuery = query.toLowerCase();
+      
+      return results.sort((a, b) => {
+        // Приоритет 1: начинается с запроса
+        const aStartsWith = a.name.toLowerCase().startsWith(lowerQuery);
+        const bStartsWith = b.name.toLowerCase().startsWith(lowerQuery);
+        
+        if (aStartsWith && !bStartsWith) return -1;
+        if (!aStartsWith && bStartsWith) return 1;
+        
+        // Приоритет 2: содержит запрос
+        const aContains = a.name.toLowerCase().includes(lowerQuery);
+        const bContains = b.name.toLowerCase().includes(lowerQuery);
+        
+        if (aContains && !bContains) return -1;
+        if (!aContains && bContains) return 1;
+        
+        // Если одинаковый приоритет - сортируем по алфавиту
+        return a.name.localeCompare(b.name);
+      }).slice(0, 3); // Берем только 3 результата
+    },
   }
 };
 
@@ -141,5 +198,11 @@ export default {
   width: 90px;
   height: 90px;
   padding-bottom: 5px;
+}
+
+.result-item {
+  color: #fff;
+  font-family: 'LC Web';
+  margin: 20px;
 }
 </style>

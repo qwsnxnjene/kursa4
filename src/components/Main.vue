@@ -5,7 +5,7 @@
     </div>
     <div class='search'>
       <p>Пойск<br>по ВУЗам</p>
-      <input @click="performSearch" v-model="searchQuery" type="text" class="search-window">
+      <input @input="performSearch" v-model="searchQuery" type="text" class="search-window">
       <div v-if="results.length > 0" class="results-container">
       <div 
         v-for="(item, index) in results" 
@@ -36,7 +36,8 @@ export default {
       updateInterval: null,
       searchQuery: "",
       results: [],
-      debounceTimer: null
+      debounceTimer: null,
+      citySelected: "kazan"
     }
   },
   computed: {
@@ -60,6 +61,7 @@ export default {
   },
   beforeDestroy() {
     clearInterval(this.updateInterval)
+    this.$root.$off('city-changed')
   },
 
   methods: {
@@ -74,11 +76,13 @@ export default {
       try {
         const response = await axios.get('/api/search', {
           params: {
-            query: this.searchQuery
+            query: this.searchQuery,
+            city: this.citySelected
           }
         })
-
+        console.log(response.data)
         this.results = this.sortResults(response.data, this.searchQuery)
+        
       } catch (error) {
         console.error('Ошибка поиска', error)
       } 
@@ -106,6 +110,11 @@ export default {
         return a.name.localeCompare(b.name);
       }).slice(0, 3); // Берем только 3 результата
     },
+  },
+  created() {
+    this.$root.$on('city-changed', (city) => {
+      this.citySelected = city
+    })
   }
 };
 
@@ -204,5 +213,8 @@ export default {
   color: #fff;
   font-family: 'LC Web';
   margin: 20px;
+  padding: 8px;
+  border: #6a1b9a solid;
+  border-radius: 13px;
 }
 </style>

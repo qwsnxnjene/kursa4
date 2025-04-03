@@ -7,7 +7,7 @@
       <p class="logo_text">Цйфровои помощнйк</p>
     </div>
       <div class="city-selector">
-        <select class="custom-select">
+        <select v-model="citySelected" class="custom-select">
           <option value="kazan" selected>Казань</option>
           <option value="moscow">Москва</option>
           <option value="petersburg">Санкт-Петербург</option>
@@ -25,6 +25,16 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
+  data() {
+    return {
+      citySelected: "kazan"
+    }
+  },
+  watch: {
+    citySelected(newValue) {
+      this.$root.$emit('city-changed', newValue)
+    }
+  }
 };
 </script>
 

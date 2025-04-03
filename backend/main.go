@@ -1,58 +1,112 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
+	"path/filepath"
 	"strings"
+
+	_ "github.com/mattn/go-sqlite3"
 )
 
-type Institution struct {
-	ID   int    `json:"id"`
+type Uni struct {
 	Name string `json:"name"`
 }
 
-// Mock data - в реальном приложении заменить на запрос к БД
-var institutions = []Institution{
-	{1, "Московский Государственный Университет"},
-	{2, "Санкт-Петербургский Государственный Университет"},
-	{3, "Казанский Федеральный Университет"},
-	{4, "Новосибирский Государственный Университет"},
-	{5, "Московский Физико-Технический Институт"},
-}
+var db *sql.DB
 
 func searchHandler(w http.ResponseWriter, r *http.Request) {
 	query := r.URL.Query().Get("query")
-	fmt.Print("Oopsie")
 	if query == "" {
-		json.NewEncoder(w).Encode([]Institution{})
+		json.NewEncoder(w).Encode([]Uni{})
 		return
 	}
 
-	var results []Institution
-	lowerQuery := strings.ToLower(query)
+	result := []Uni{}
 
-	for _, inst := range institutions {
-		lowerName := strings.ToLower(inst.Name)
+	city := r.URL.Query().Get("city")
+	query = "%" + query + "%"
 
-		// Ищем совпадения (в реальном приложении лучше использовать полнотекстовый поиск)
-		if strings.HasPrefix(lowerName, lowerQuery) || strings.Contains(lowerName, lowerQuery) {
-			results = append(results, inst)
-		}
+	if db == nil {
+		fmt.Println("Database connection not initialized")
+		return
 	}
 
-	// Ограничиваем количество результатов (сортировка делается на клиенте)
-	if len(results) > 5 {
-		results = results[:5]
+	if city == "kazan" {
+		rows, err := db.Query("SELECT name FROM kazan_unis WHERE name LIKE :query LIMIT 3",
+			sql.Named("query", strings.ToLower(query)))
+		if err != nil {
+			json.NewEncoder(w).Encode([]Uni{})
+			return
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			name := Uni{}
+
+			err = rows.Scan(&name.Name)
+			if err != nil {
+				json.NewEncoder(w).Encode([]Uni{})
+			}
+			result = append(result, name)
+		}
+	} else if city == "moscow" {
+		rows, err := db.Query("SELECT name FROM moscow_unis WHERE name LIKE :query LIMIT 3",
+			sql.Named("query", strings.ToLower(query)))
+		if err != nil {
+			json.NewEncoder(w).Encode([]Uni{})
+			return
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			name := Uni{}
+
+			err = rows.Scan(&name.Name)
+			if err != nil {
+				json.NewEncoder(w).Encode([]Uni{})
+			}
+			result = append(result, name)
+		}
+	} else if city == "petersburg" {
+		rows, err := db.Query("SELECT name FROM stp_unis WHERE name LIKE :query LIMIT 3",
+			sql.Named("query", strings.ToLower(query)))
+		if err != nil {
+			json.NewEncoder(w).Encode([]Uni{})
+			return
+		}
+		defer rows.Close()
+
+		for rows.Next() {
+			name := Uni{}
+
+			err = rows.Scan(&name.Name)
+			if err != nil {
+				json.NewEncoder(w).Encode([]Uni{})
+			}
+			result = append(result, name)
+		}
 	}
 
 	w.Header().Set("Content-Type", "application/json")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.Header().Set("Access-Control-Allow-Methods", "GET")
-	json.NewEncoder(w).Encode(results)
+	json.NewEncoder(w).Encode(result)
 }
 
 func main() {
+	var err error
+	dbPath := filepath.Join("db", "unis.db")
+
+	db, err = sql.Open("sqlite3", dbPath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer db.Close()
+
 	http.HandleFunc("/api/search", searchHandler)
 	http.ListenAndServe(":8081", nil)
 }

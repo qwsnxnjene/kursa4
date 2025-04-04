@@ -7,8 +7,8 @@
       <p class="logo_text">Цйфровои помощнйк</p>
     </div>
       <div class="city-selector">
-        <select v-model="citySelected" class="custom-select">
-          <option value="kazan" selected>Казань</option>
+        <select v-model="selectedCity" class="custom-select" @change="updateCity">
+          <option value="kazan">Казань</option>
           <option value="moscow">Москва</option>
           <option value="petersburg">Санкт-Петербург</option>
         </select>
@@ -25,14 +25,24 @@
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: 'Header',
-  data() {
-    return {
-      citySelected: "kazan"
+  // data() {
+  //   return {
+  //     selectedCity: "kazan"
+  //   }
+  // },
+  computed: {
+    selectedCity: {
+      get() {
+        return this.$store.state.selectedCity
+      },
+      set(value) {
+        this.$store.commit('setCity', value)
+      }
     }
   },
-  watch: {
-    citySelected(newValue) {
-      this.$root.$emit('city-changed', newValue)
+  methods: {
+    updateCity() {
+      this.$emit('city-changed', this.selectedCity)
     }
   }
 };
@@ -88,22 +98,20 @@ export default {
   width: 150%;
 }
 .city-selector {
-  margin-left: 45%;
+  margin-left: 50%;
   width: fit-content;
+  
 }
 
 .city-selector .custom-select {
   width: fit-content;
   appearance: none;       
   border: none;
+  text-align: center;
   outline: none;
   background: transparent;
   -webkit-appearance: none; 
-  -moz-appearance: none;  
-  background-image: url("../assets/button_down.svg"); 
-  background-repeat: no-repeat;
-  background-position: right 100px center; 
-  background-size: 58px;  
+  -moz-appearance: none;   
   height: 100px;
   font: 35px 'LC Web';
   color: #ffffff;
@@ -111,7 +119,7 @@ export default {
 }
 
 .avatar {
-  margin-left: -55px;
-  padding-right: 15px;
+  margin-left: -10px;
+  padding: 0px 15px;
 }
 </style>

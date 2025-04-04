@@ -170,6 +170,8 @@ export default {
   box-shadow: 0 4px 4px #6A1B9A;
   font-size: 30px;
   font-family: 'LC Web';
+  box-sizing: border-box;
+  padding-left: 10px;
 }
 
 .ready-btn {

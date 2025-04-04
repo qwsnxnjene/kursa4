@@ -17,51 +17,33 @@
     </div>
     </div>
     
-    <div class='calendar-swipe'>
-        <div class="date">{{ formattedDate }}</div>
-        <img class="cal" src="../assets/calendar.svg" />
-        <div class="time">{{ formattedTime }}</div>
-    </div>
+    <CalendarSwipe></CalendarSwipe>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import CalendarSwipe from './CalendarSwipe.vue';
 
 export default {
   name: 'MainContent',
+  components: {CalendarSwipe},
   data() {
     return {
-      now: new Date(),
-      updateInterval: null,
       searchQuery: "",
       results: [],
       debounceTimer: null,
       citySelected: "kazan"
     }
   },
-  computed: {
-    formattedDate() {
-      return this.now.toLocaleDateString('ru-RU', {
-        day: '2-digit',
-        month: '2-digit',
-      })
-    },
-    formattedTime() {
-      return this.now.toLocaleTimeString('ru-RU', {
-        hour: '2-digit',
-        minute: '2-digit',
-      })
-    }
-  },
-  mounted() {
-    this.updateInterval = setInterval(() => {
-      this.now = new Date()
-    }, 1000)
-  },
   beforeDestroy() {
     clearInterval(this.updateInterval)
-    this.$root.$off('city-changed')
+  },
+
+  computed: {
+    currentCity() {
+      return this.$store.state.selectedCity
+    }
   },
 
   methods: {
@@ -77,7 +59,7 @@ export default {
         const response = await axios.get('/api/search', {
           params: {
             query: this.searchQuery,
-            city: this.citySelected
+            city: this.$store.state.selectedCity
           }
         })
         console.log(response.data)
@@ -111,11 +93,7 @@ export default {
       }).slice(0, 3); // Берем только 3 результата
     },
   },
-  created() {
-    this.$root.$on('city-changed', (city) => {
-      this.citySelected = city
-    })
-  }
+
 };
 
 </script>
@@ -160,53 +138,23 @@ export default {
   box-shadow: 0 4px 4px #6A1B9A;
   font-size: 30px;
   font-family: 'LC Web';
-}
-
-.calendar-swipe {
-  border-radius: 30px 0 0 30px;
-  background-color: #6a1b9a;
-  height: fit-content;
-  padding: 5px;
-  margin-top: 15%;
-  box-shadow: 0 4px 4px #000;
-}
-
-.calendar-swipe .date {
-  font-family: 'LC Web';
-  height: fit-content;
-  font-size: 55px;
-  color: #ffffff;
-}
-
-.calendar-swipe .time {
-  font-family: 'LC Web';
-  height: fit-content;
-  font-size: 50px;
-  color: #ffffff;
-}
-
-.calendar-swipe img {
-  margin-top: 100%;
-  margin-bottom: 100%;
-  width: 69px;
-  height: 69px;
+  box-sizing: border-box;
+  padding-left: 10px;
 }
 
 .telegram-swipe {
   border-radius: 0 30px 30px 0;
   background-color: #2e2e2e;
-  width: 6%;
   box-shadow: 0 4px 4px #000;
   padding: 5px;
-  margin-top: 15%;
-  height: auto;
+  margin-top: 18%;
+  height: fit-content;
 }
 
 .telegram-swipe img {
-  margin-top: 120%;
-  width: 90px;
-  height: 90px;
-  padding-bottom: 5px;
+  margin: 100px 0;
+  width: 80px;
+  height: 80px;
 }
 
 .result-item {

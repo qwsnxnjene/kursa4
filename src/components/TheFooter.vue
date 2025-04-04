@@ -17,7 +17,7 @@ footer {
 }
 
 footer p {
-  margin: 0;
+  margin: -40px 0;
   color: #fff;
   font-weight: 100;
 }

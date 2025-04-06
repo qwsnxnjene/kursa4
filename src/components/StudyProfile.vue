@@ -38,18 +38,18 @@
     </div>
     <div class="input-name">
         <p>ймя</p>
-        <input type="text" class="name-window">
+        <input @input="isChanged=true" type="text" class="name-window">
     </div>
     <div class="input-name">
         <p>номер телефона</p>
-        <input type="text" class="name-window">
+        <input @input="isChanged=true" type="text" class="name-window">
     </div>
     <div class="input-name">
         <p>email</p>
-        <input type="text" class="name-window">
+        <input @input="isChanged=true" type="text" class="name-window">
     </div>
     <div class="ready-btn">
-      <button>
+      <button :disabled="!isChanged">
               Готово!
       </button>
     </div>
@@ -62,6 +62,11 @@ import CalendarSwipe from './CalendarSwipe.vue';
 export default {
   name: 'MainContent',
   components: [CalendarSwipe],
+  data() {
+    return {
+      isChanged: false,
+    }
+  },
 };
 
 </script>
@@ -103,7 +108,7 @@ export default {
 .first-article img {
     width: 600px;
     height: auto;
-    margin: 10px 600px 15px 100px;
+    margin: 10px 600px 15px 300px;
 }
 
 .first-article p {
@@ -126,7 +131,7 @@ export default {
 }
 
 .second-article p {
-    margin-left:50px;
+    margin-left:100px;
     margin-top: 50px;
     color: #fff;
     font-family: 'IF Kica';
@@ -188,6 +193,15 @@ button {
   border: none;
   border-radius: 16px;
   width: 410px;
+  cursor: pointer;
+}
+
+button:disabled {
+  background-color: #4A126B; /* Промежуточный тёмный оттенок */
+  color: #C9A3E8;
+  cursor: not-allowed;
+  /* Можно добавить эффект "выцветания" */
+  box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
 }
 
 </style>

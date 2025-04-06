@@ -5,15 +5,20 @@
       <img src="../assets/profile.svg" alt="Аватар профиля">
       <div class="input-name">
         <p>ймя</p>
-        <input type="text" class="name-window">
-        <img src="../assets/ok_btn.svg" alt="">
+        <input @input="inputChanged" type="text" class="name-window" v-model="form.name">
+        <!-- <img src="../assets/ok_btn.svg" alt=""> -->
         
       </div>
       <div class="input-surname">
           <p>фамйлйя</p>
-          <input type="text" class="surname-window">
-          <img src="../assets/ok_btn.svg" alt="">
+          <input @input="inputChanged" type="text" class="surname-window" v-model="form.surname">
+          <!-- <img src="../assets/ok_btn.svg" alt=""> -->
         </div>
+      <div class="save-btn">
+          <button :disabled="!isChanged">
+            Сохранйть
+          </button>
+      </div>
       <div class="agree-btn">
         <router-link to="/study">
           <button>
@@ -32,6 +37,24 @@ import CalendarSwipe from './CalendarSwipe.vue';
 export default {
   name: 'MainContent',
   components: [CalendarSwipe],
+  data() {
+    return {
+      isChanged: false,
+      form: {
+        name: "",
+        surname: ""
+      }
+    }
+  },
+  methods: {
+    inputChanged() {
+      if (this.form.name == "" || this.form.surname == "") {
+        this.isChanged = false
+      } else {
+        this.isChanged = true
+      }
+    }
+  }
 };
 
 </script>
@@ -88,10 +111,10 @@ export default {
   padding-left: 10px;
 }
 
-.input-name img {
+/* .input-name img {
   height: 60px;
   margin-left: 20px;
-}
+} */
 
 .input-surname p {
   font-size: 45px;
@@ -112,10 +135,10 @@ export default {
   padding-left: 10px;
 }
 
-.input-surname img {
+/* .input-surname img {
   height: 60px;
   margin-left: 20px;
-}
+} */
 
 .agree-btn button{
   font-size: 40px;
@@ -125,9 +148,33 @@ export default {
   border: none;
   border-radius: 16px;
   width: 410px;
+  margin-right: -10px;
+  cursor: pointer;
 }
 
 .agree-btn {
   margin-top: 40px;
+}
+
+.save-btn button{
+  font-size: 40px;
+  color: #fff;
+  font-family: 'IF Kica';
+  background-color: #2e2e2e;
+  border: 1px solid;
+  border-color: #6A1B9A;
+  border-radius: 16px;
+  width: 410px;
+  margin-right: -10px;
+  cursor: pointer;
+}
+
+.save-btn {
+  margin-top: 40px;
+}
+
+.save-btn button:disabled {
+  background-color: #535353;
+  color: #b1b1b1;
 }
 </style>

@@ -100,10 +100,10 @@ export default {
 .city-selector {
   margin-left: 50%;
   width: fit-content;
-  
 }
 
 .city-selector .custom-select {
+  cursor: pointer;
   width: fit-content;
   appearance: none;       
   border: none;

@@ -28,7 +28,7 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	result := []Uni{}
 
 	city := r.URL.Query().Get("city")
-	query = "%" + query + "%"
+	query = query + "%"
 
 	if db == nil {
 		fmt.Println("Database connection not initialized")
@@ -36,8 +36,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if city == "kazan" {
-		rows, err := db.Query("SELECT name FROM kazan_unis WHERE name LIKE :query LIMIT 3",
-			sql.Named("query", strings.ToLower(query)))
+		rows, err := db.Query("SELECT name FROM kazan_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
 			return
@@ -54,8 +54,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			result = append(result, name)
 		}
 	} else if city == "moscow" {
-		rows, err := db.Query("SELECT name FROM moscow_unis WHERE name LIKE :query LIMIT 3",
-			sql.Named("query", strings.ToLower(query)))
+		rows, err := db.Query("SELECT name FROM moscow_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
 			return
@@ -72,8 +72,8 @@ func searchHandler(w http.ResponseWriter, r *http.Request) {
 			result = append(result, name)
 		}
 	} else if city == "petersburg" {
-		rows, err := db.Query("SELECT name FROM stp_unis WHERE name LIKE :query LIMIT 3",
-			sql.Named("query", strings.ToLower(query)))
+		rows, err := db.Query("SELECT name FROM stp_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
 			return

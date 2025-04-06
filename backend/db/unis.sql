@@ -1,21 +1,39 @@
 CREATE TABLE kazan_unis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(256) NOT NULL DEFAULT ''
+    name VARCHAR(256) NOT NULL DEFAULT '',
+    img1 VARCHAR(256) NOT NULL DEFAULT '',
+    img2 VARCHAR(256) NOT NULL DEFAULT '',
+    article1 VARCHAR(512) NOT NULL DEFAULT '',
+    article2 VARCHAR(512) NOT NULL DEFAULT '',
+    url VARCHAR(256) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE moscow_unis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(256) NOT NULL DEFAULT ''
+    name VARCHAR(256) NOT NULL DEFAULT '',
+    img1 VARCHAR(256) NOT NULL DEFAULT '',
+    img2 VARCHAR(256) NOT NULL DEFAULT '',
+    article1 VARCHAR(512) NOT NULL DEFAULT '',
+    article2 VARCHAR(512) NOT NULL DEFAULT '',
+    url VARCHAR(256) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE stp_unis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name VARCHAR(256) NOT NULL DEFAULT ''
+    name VARCHAR(256) NOT NULL DEFAULT '',
+    img1 VARCHAR(256) NOT NULL DEFAULT '',
+    img2 VARCHAR(256) NOT NULL DEFAULT '',
+    article1 VARCHAR(512) NOT NULL DEFAULT '',
+    article2 VARCHAR(512) NOT NULL DEFAULT '',
+    url VARCHAR(256) NOT NULL DEFAULT ''
 );
 
-INSERT INTO kazan_unis (name) 
+INSERT INTO kazan_unis (name, img1, img2, article1, article2, url) 
 VALUES 
-('Казанский (Приволжский) федеральный университет'),
+('Казанский (Приволжский) федеральный университет',
+ 'https://prepschool.kpfu.ru/content/uploads/2020/12/untitled-5-of-8-scaled.jpg',
+ 'https://kpfu.ru/portal/docs/F182267925/kfu_finansovyj.jpg'),
+ ''
 ('Казанский национальный исследовательский технический университет им. А.Н. Туполева - КАИ'),
 ('Казанский государственный медицинский университет'),
 ('Казанский национальный исследовательский технологический университет'),

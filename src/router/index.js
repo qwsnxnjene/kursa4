@@ -21,6 +21,11 @@ const routes = [
     path: '/study',
     name: 'Study',
     component: Study
+  },
+  {
+    path: '/universities/:id',
+    component: Study,
+    props: true
   }
 ]
 

@@ -89,7 +89,7 @@ export default {
 .logo .logo_text {
   position: absolute;
   top: -15px;
-  left: -25%;
+  left: 80px;
   font-family: "IF Kica", Helvetica;
   font-weight: 400;
   color: #ffffff;

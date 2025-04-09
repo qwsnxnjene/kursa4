@@ -1,30 +1,16 @@
 <template>
   <div class='main-content'>
     <div class='vuz'>
-        <p>КФУ</p>
+        <a :href="uni.url">{{ uni.short_name }}</a>
     </div>
     <div class="first-article">
         
-        <img src="../assets/кфу1.png" alt="">
-        <p>Lorem ipsum dolor sit amet,<br>
-        consectetur adipiscing elit. Mauris 
-        viverra non nibh eu scelerisque. 
-        Phasellus sodales justo purus, 
-        quis placerat diam convallis eu. 
-        Nulla facilisi. Praesent maximus 
-        lacus quis massa luctus cursus. 
-        Nullam ac rutrum ipsum, viverra egestas ipsum.</p>
+        <img :src="uni.img1" alt="">
+        <p>{{ uni.article1 }}</p>
     </div>
     <div class="second-article">
-        <p>Lorem ipsum dolor sit amet,<br>
-        consectetur adipiscing elit. Mauris 
-        viverra non nibh eu scelerisque. 
-        Phasellus sodales justo purus, 
-        quis placerat diam convallis eu. 
-        Nulla facilisi. Praesent maximus 
-        lacus quis massa luctus cursus. 
-        Nullam ac rutrum ipsum, viverra egestas ipsum.</p>
-        <img src="../assets/кфу2.png" alt="">
+        <p>{{ uni.article2 }}</p>
+        <img :src="uni.img2" alt="">
     </div>
     <div class="info">
         <p>Информацйя о поступленйй</p>
@@ -57,16 +43,42 @@
 </template>
 
 <script>
-import CalendarSwipe from './CalendarSwipe.vue';
-
+import axios from 'axios';
 export default {
+
   name: 'MainContent',
-  components: [CalendarSwipe],
   data() {
     return {
       isChanged: false,
+      uni: {
+        name: '',
+        short_name: '',
+        img1: '',
+        img2: '',
+        article1: '',
+        article2: '',
+        url: ''
+      }
     }
   },
+  methods: {
+    async fetchUniversity() {
+      try {
+        const response = await axios.get(`/api/universities/${this.$route.params.id}`, {
+          params: {
+            city: this.$store.state.selectedCity
+          }
+      })
+        this.uni = response.data
+        console.log(this.uni)
+      } catch (error) {
+        console.error('error')
+      }
+    }
+  },
+  created() {
+    this.fetchUniversity()
+  }
 };
 
 </script>
@@ -93,11 +105,12 @@ export default {
   padding-bottom: 18%;
 }
 
-.vuz p {
+.vuz a {
   color: #fff;
   font-family: 'IF Kica';
   font-size: 60px;
   margin: 20px;
+  text-decoration: none;
 }
 
 .first-article {
@@ -107,15 +120,15 @@ export default {
 
 .first-article img {
     width: 600px;
-    height: auto;
+    height: 400px;
     margin: 10px 600px 15px 300px;
 }
 
 .first-article p {
     margin-top: 50px;
     color: #fff;
-    font-family: 'IF Kica';
-    font-size: 30px;
+    font-family: 'LC Web';
+    font-size: 50px;
     width: 800px;
 }
 
@@ -126,7 +139,7 @@ export default {
 
 .second-article img {
     width: 600px;
-    height: auto;
+    height: 400px;
     margin: 10px 100px 15px 600px;
 }
 
@@ -134,8 +147,8 @@ export default {
     margin-left:100px;
     margin-top: 50px;
     color: #fff;
-    font-family: 'IF Kica';
-    font-size: 30px;
+    font-family: 'LC Web';
+    font-size: 50px;
     width: 800px;
 }
 

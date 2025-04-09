@@ -12,7 +12,9 @@
         :key="index"
         class="result-item"
       >
-        {{ item.name }}
+        <router-link :to="'/universities/' + item.id" class="router">
+          {{ item.name }}
+        </router-link>
       </div>
     </div>
     </div>
@@ -158,11 +160,17 @@ export default {
 }
 
 .result-item {
+   margin: 20px;
+  padding: 8px;
+  
+}
+
+.result-item .router {
   color: #fff;
   font-family: 'LC Web';
-  margin: 20px;
   padding: 8px;
   border: #6a1b9a solid;
   border-radius: 13px;
+  text-decoration: none;
 }
 </style>

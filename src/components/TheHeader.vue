@@ -74,7 +74,7 @@ export default {
 
 .logo {
   position: relative;
-  width: 839px;
+  width: 550px;
   height: 100px;
 }
 
@@ -89,7 +89,7 @@ export default {
 .logo .logo_text {
   position: absolute;
   top: -15px;
-  left: 80px;
+  left: 0px;
   font-family: "IF Kica", Helvetica;
   font-weight: 400;
   color: #ffffff;
@@ -98,7 +98,7 @@ export default {
   width: 150%;
 }
 .city-selector {
-  margin-left: 50%;
+  margin-left: 60%;
   width: fit-content;
 }
 

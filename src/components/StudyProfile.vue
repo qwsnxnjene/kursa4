@@ -35,10 +35,15 @@
         <input @input="isChanged=true" type="text" class="name-window">
     </div>
     <div class="ready-btn">
-      <button :disabled="!isChanged">
+      <button :disabled="!isChanged" @click="submitForm">
               Готово!
       </button>
     </div>
+    <transition name="popup-fade">
+      <div v-if="showPopup" class="popup-success">
+        Заявка прйнята!
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -50,6 +55,7 @@ export default {
   data() {
     return {
       isChanged: false,
+      showPopup: false,
       uni: {
         name: '',
         short_name: '',
@@ -74,6 +80,13 @@ export default {
       } catch (error) {
         console.error('error')
       }
+    },
+    submitForm() {
+      this.showPopup = true;
+      setTimeout(() => {
+        this.showPopup = false;
+      }, 2000);
+      this.isChanged = false;
     }
   },
   created() {
@@ -215,6 +228,40 @@ button:disabled {
   cursor: not-allowed;
   /* Можно добавить эффект "выцветания" */
   box-shadow: inset 0 0 10px rgba(0,0,0,0.2);
+}
+
+.popup-success {
+  position: fixed;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #6A1B9A;
+  color: #fff;
+  font-family: 'IF Kica';
+  font-size: 36px;
+  padding: 24px 60px;
+  border-radius: 20px;
+  box-shadow: 0 4px 24px #6A1B9A99;
+  z-index: 1000;
+  animation: fadeInOut 5s;
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  80% { opacity: 0.9; }
+  90% { opacity: 0.4; }
+  100% { opacity: 0; }
+}
+
+.popup-fade-enter-active, .popup-fade-leave-active {
+  transition: opacity 1s;
+}
+.popup-fade-enter-from, .popup-fade-leave-to {
+  opacity: 0;
+}
+.popup-fade-enter-to, .popup-fade-leave-from {
+  opacity: 1;
 }
 
 </style>

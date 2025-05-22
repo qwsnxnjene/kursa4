@@ -1,19 +1,20 @@
 package main
 
 import (
-	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
 
+	"github.com/qwsnxnjene/kursa4/backend/db"
 	"github.com/qwsnxnjene/kursa4/backend/handlers"
 )
 
-var DB *sql.DB
-
 func main() {
-	db := handlers.OpenDB()
-	defer db.Close()
+	_, err := db.OpenSql()
+	if err != nil {
+		log.Fatalf("[main]: %v", err)
+	}
 
 	r := mux.NewRouter()
 
@@ -24,5 +25,6 @@ func main() {
 			id := vars["id"]
 			handlers.UniversityHandler(id)(w, r)
 		})
+	r.HandleFunc("/api/signin", handlers.SignUpHandler)
 	http.ListenAndServe(":8081", r)
 }

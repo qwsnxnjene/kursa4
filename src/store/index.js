@@ -6,20 +6,25 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    selectedCity: 'kazan'
+    selectedCity: 'kazan',
+    isAuthenticated: false
   },
   mutations: {
     setCity(state, city) {
       state.selectedCity = city
+    },
+    setAuthentication(state, value) {
+      state.isAuthenticated = value
     }
   },
   getters: {
-    currentCity: state => state.selectedCity
+    currentCity: state => state.selectedCity,
+    isAuthenticated: state => state.isAuthenticated
   },
   plugins: [
     createPersistedState({
       key: 'uni-app',
-      paths: ['selectedCity']
+      paths: ['selectedCity', 'isAuthenticated'],
     })
   ]
 })

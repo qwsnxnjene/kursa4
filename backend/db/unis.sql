@@ -1,3 +1,12 @@
+CREATE TABLE users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username VARCHAR(64) NOT NULL DEFAULT '',
+    password VARCHAR(64) NOT NULL DEFAULT '',
+    email VARCHAR(256) NOT NULL DEFAULT '',
+    phone VARCHAR(16) NOT NULL DEFAULT '',
+    role TEXT CHECK ( role IN ('admin', 'student') )
+);
+
 CREATE TABLE kazan_unis (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(256) NOT NULL DEFAULT '',

@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/qwsnxnjene/kursa4/backend/db"
 )
 
 type UniFull struct {
@@ -39,7 +40,7 @@ func UniversityHandler(id string) http.HandlerFunc {
 		result := UniFull{}
 
 		query := fmt.Sprintf("SELECT name, short_name, img1, img2, article1, article2, url FROM %s_unis WHERE id = :id", citySql)
-		rows, err := DB.Query(query, sql.Named("id", idInt))
+		rows, err := db.Database.Query(query, sql.Named("id", idInt))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
 			return

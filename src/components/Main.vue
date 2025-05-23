@@ -121,7 +121,6 @@ export default {
 }
 
 .search {
-  position: relative;
   padding-top: 15%;
 }
 

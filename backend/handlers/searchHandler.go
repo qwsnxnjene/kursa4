@@ -4,31 +4,16 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
-	"path/filepath"
 	"strings"
 
 	_ "github.com/mattn/go-sqlite3"
+	"github.com/qwsnxnjene/kursa4/backend/db"
 )
 
 type Uni struct {
 	ID   int    `json:"id"`
 	Name string `json:"name"`
-}
-
-var DB *sql.DB
-
-func OpenDB() *sql.DB {
-	var err error
-	dbPath := filepath.Join(".", "db", "unis_full.db")
-	DB, err = sql.Open("sqlite3", dbPath)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return DB
 }
 
 func SearchHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,13 +31,13 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 	city := r.URL.Query().Get("city")
 	query = query + "%"
 
-	if DB == nil {
+	if db.Database == nil {
 		fmt.Println("Database connection not initialized")
 		return
 	}
 
 	if city == "kazan" {
-		rows, err := DB.Query("SELECT id, name FROM kazan_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+		rows, err := db.Database.Query("SELECT id, name FROM kazan_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
 			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
@@ -70,7 +55,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			result = append(result, name)
 		}
 	} else if city == "moscow" {
-		rows, err := DB.Query("SELECT id, name FROM moscow_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+		rows, err := db.Database.Query("SELECT id, name FROM moscow_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
 			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})
@@ -88,7 +73,7 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 			result = append(result, name)
 		}
 	} else if city == "petersburg" {
-		rows, err := DB.Query("SELECT id, name FROM stp_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
+		rows, err := db.Database.Query("SELECT id, name FROM stp_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
 			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
 		if err != nil {
 			json.NewEncoder(w).Encode([]Uni{})

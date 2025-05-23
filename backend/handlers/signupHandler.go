@@ -1,12 +1,15 @@
 package handlers
 
 import (
+	"crypto/sha256"
 	"database/sql"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 
+	"github.com/golang-jwt/jwt"
 	"github.com/qwsnxnjene/kursa4/backend/db"
 	"golang.org/x/crypto/bcrypt"
 )
@@ -104,6 +107,25 @@ func SignUpHandler(rw http.ResponseWriter, r *http.Request) {
 	// 	rw.Write([]byte(`{"error": "Внутренняя ошибка сервера"}`))
 	// }
 
+	secret := []byte("secret")
+
+	hash := sha256.Sum256(secret)
+
+	claims := jwt.MapClaims{
+		"hash":  hex.EncodeToString(hash[:]),
+		"login": p.Email,
+	}
+
+	jwtToken := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	signedToken, err := jwtToken.SignedString(secret)
+	if err != nil {
+		rw.WriteHeader(http.StatusBadRequest)
+		rw.Write([]byte(fmt.Errorf("failed to sign jwt: %s", err).Error()))
+		return
+	}
+
+	fmt.Println(signedToken)
+
 	rw.WriteHeader(http.StatusCreated)
-	rw.Write([]byte(`{"message":"Вы успешно зарегйстрйрованы"}`))
+	rw.Write([]byte(fmt.Sprintf(`{"message":"Вы успешно зарегйстрйрованы", "token":"%s", "name": "%s", "email": "%s", "role": "%s"}`, signedToken, p.Name, p.Email, p.Role)))
 }

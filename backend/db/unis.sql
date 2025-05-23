@@ -4,7 +4,8 @@ CREATE TABLE users (
     password VARCHAR(64) NOT NULL DEFAULT '',
     email VARCHAR(256) NOT NULL DEFAULT '',
     phone VARCHAR(16) NOT NULL DEFAULT '',
-    role TEXT CHECK ( role IN ('admin', 'student') )
+    role TEXT CHECK ( role IN ('admin', 'student') ),
+    surname VARCHAR(64) NOT NULL DEFAULT ''
 );
 
 CREATE TABLE kazan_unis (

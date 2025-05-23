@@ -18,6 +18,7 @@
         <img src="../assets/profile.svg" alt="Аватар">
       </router-link>
     </div>
+    <button class="login-btn" v-if="!isAuthenticated" @click="showLogin = true">Вход</button>
     <button class="register-btn" @click="showRegister = true" v-if="!isAuthenticated">Регйстрацйя</button>
     <button class="register-btn" v-else @click="logout">Выитй</button>
     <transition name="popup-fade">
@@ -57,6 +58,27 @@
         {{ registerMessage }}
       </div>
     </transition>
+    <transition name="popup-fade">
+      <div v-if="showLogin" class="register-modal">
+        <div class="register-content">
+          <h2>Вход</h2>
+          <form @submit.prevent="login">
+            <label>
+              Email:
+              <input v-model="loginForm.email" type="email" required>
+            </label>
+            <label>
+              Пароль:
+              <input v-model="loginForm.password" type="password" required>
+            </label>
+            <div class="register-actions">
+              <button type="submit">Воитй</button>
+              <button type="button" @click="showLogin = false">Отмена</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </transition>
   </header>
 </template>
 
@@ -69,11 +91,16 @@ export default {
   data() {
     return {
       showRegister: false,
+      showLogin: false,
       registerForm: {
         name: '',
         email: '',
         password: '',
         role: 'student'
+      },
+      loginForm: {
+        email: '',
+        password: ''
       },
       registerMessage: ''
     }
@@ -109,6 +136,10 @@ export default {
       this.registerForm = { name: '', email: '', password: '', role: 'student' };
       this.registerMessage = response.data.message || 'Регйстрацйя успешна!';
       this.$store.commit('setAuthentication', true);
+      this.$store.commit("setAuthToken", response.data.token);
+      this.$store.commit("setUserName", response.data.name);
+      this.$store.commit("setUserRole", response.data.role);
+      this.$store.commit("setUserEmail", response.data.email);
     } catch (error) {
       this.registerMessage = error.response?.data?.error || error.response?.data?.message || 'Ошйбка регйстрацйй';
     }
@@ -118,7 +149,38 @@ export default {
     },
     logout() {
       this.$store.commit('setAuthentication', false);
-      // this.$router.push('/');
+      this.$store.commit("setAuthToken", '');
+      this.$store.commit("setUserName", "");
+      this.$store.commit("setUserRole", '');
+      this.$store.commit("setUserEmail", '');
+      this.$store.commit("setUserSurname", '');
+      this.$store.commit("setCity", 'kazan');
+      if (this.$route.path !== '/') {
+        this.$router.push('/');
+      }
+    },
+    async login() {
+      try {
+        const response = await axios.post('/api/login', {
+          email: this.loginForm.email,
+          password: this.loginForm.password
+        });
+        console.log(response.data);
+        this.showLogin = false;
+        this.$store.commit("setUserEmail", response.data.email)
+        this.loginForm = { email: '', password: '' };
+        this.$store.commit('setAuthentication', true);
+        this.$store.commit("setAuthToken", response.data.token);
+        this.$store.commit("setUserName", response.data.name);
+        this.$store.commit("setUserRole", response.data.role);
+        this.$store.commit("setUserSurname", response.data.surname);
+      } catch (error) {
+        console.error(error);
+        this.registerMessage = error.response?.data?.error || error.response?.data?.message || 'Ошйбка входа';
+      }
+      setTimeout(() => {
+        this.registerMessage = '';
+      }, 3000);
     }
   }
 };
@@ -201,7 +263,7 @@ export default {
 
 .register-btn {
   margin-left: 15px;
-  margin-right: 10px;
+  margin-right: 20px;
   font-size: 22px;
   background: #6A1B9A;
   color: #fff;
@@ -294,6 +356,24 @@ export default {
   box-shadow: 0 4px 24px #6A1B9A99;
   z-index: 10000;
   animation: fadeInOut 5s;
+}
+
+.login-btn {
+  margin-left: 0;
+  margin-right: 10px;
+  font-size: 22px;
+  background: #fff;
+  color: #6A1B9A;
+  border: 2px solid #6A1B9A;
+  border-radius: 12px;
+  padding: 10px 24px;
+  cursor: pointer;
+  font-family: 'IF Kica';
+  transition: background 0.2s, color 0.2s;
+}
+.login-btn:hover {
+  background: #6A1B9A;
+  color: #fff;
 }
 
 @keyframes fadeInOut {

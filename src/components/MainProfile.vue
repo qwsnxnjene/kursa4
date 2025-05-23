@@ -40,6 +40,7 @@
 
 <script>
 import CalendarSwipe from './CalendarSwipe.vue';
+import axios from 'axios';
 
 export default {
   name: 'MainContent',
@@ -63,7 +64,19 @@ export default {
         this.isChanged = true
       }
     },
-    saveChanges() {
+    async saveChanges() {
+      this.$store.commit('setUserName', this.form.name);
+      this.$store.commit('setUserSurname', this.form.surname);
+      try {
+        const response = await axios.post('/api/save', {
+          name: this.form.name,
+          surname: this.form.surname,
+          email: this.$store.state.userEmail
+        })
+        console.log(response.data);
+      } catch (error) {
+        console.error(error);
+      }
       this.showPopup = true;
       setTimeout(() => {
         this.showPopup = false;
@@ -76,6 +89,18 @@ export default {
         this.showTestPopup = false;
       }, 1000);
     }
+  },
+  computed: {
+    userName() {
+      return this.$store.state.userName;
+    },
+    userSurname() {
+      return this.$store.state.userSurname;
+    }
+  },
+  created() {
+    this.form.name = this.userName;
+    this.form.surname = this.userSurname;
   }
 };
 

@@ -28,5 +28,6 @@ func main() {
 	r.HandleFunc("/api/signin", handlers.SignUpHandler)
 	r.HandleFunc("/api/login", handlers.LoginHandler)
 	r.HandleFunc("/api/save", handlers.SaveHandler)
+	r.HandleFunc("/api/adduniversity", handlers.AddUniversityHandler)
 	http.ListenAndServe(":8081", r)
 }

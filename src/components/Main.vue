@@ -159,7 +159,7 @@ export default {
 }
 
 .result-item {
-   margin: 20px;
+  margin: 20px;
   padding: 8px;
   
 }
@@ -167,6 +167,7 @@ export default {
 .result-item .router {
   color: #fff;
   font-family: 'LC Web';
+  font-size: 25px;
   padding: 8px;
   border: #6a1b9a solid;
   border-radius: 13px;

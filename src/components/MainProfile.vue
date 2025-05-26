@@ -19,20 +19,20 @@
             Сохранйть
           </button>
       </div>
-      <div class="agree-btn">
-          <button @click="showTestMessage">
-            Проитй тест
-          </button>
+      <div class="agree-btn" v-if="userRole === 'student'">
+        <button @click="goToTest">
+          Проитй тест
+        </button>
+      </div>
+      <div class="agree-btn" v-else-if="userRole === 'admin'">
+        <button @click="goToAddUniversity">
+          Добавйть ВУЗ
+        </button>
       </div>
     </div>
     <transition name="popup-fade">
       <div v-if="showPopup" class="popup-success">
         Измененйя успешно сохранены
-      </div>
-    </transition>
-    <transition name="popup-fade">
-      <div v-if="showTestPopup" class="popup-success">
-        Тест пока в разработке...
       </div>
     </transition>
   </div>
@@ -83,11 +83,11 @@ export default {
       }, 1000);
       this.isChanged = false;
     },
-    showTestMessage() {
-      this.showTestPopup = true;
-      setTimeout(() => {
-        this.showTestPopup = false;
-      }, 1000);
+    goToAddUniversity() {
+      this.$router.push('/add-university');
+    },
+    goToTest() {
+      this.$router.push('/student-test');
     }
   },
   computed: {
@@ -96,6 +96,9 @@ export default {
     },
     userSurname() {
       return this.$store.state.userSurname;
+    },
+    userRole() {
+      return this.$store.state.userRole;
     }
   },
   created() {

@@ -1,8 +1,9 @@
 <template>
     <div class='calendar-swipe' @mouseenter="isExpanded = true; isImg = false" @mouseleave="showImage">
         <div class="date">{{ formattedDate }}</div>
-        <img v-if="isImg" class="cal" src="../assets/calendar.svg" />
-        
+        <div class="img-center" :style="{ marginTop: isExpanded ? '0px' : '150px' }">
+          <img v-if="isImg" class="cal" src="../assets/calendar.svg" />
+        </div>
         <div
           class="expanded-content"
           :class="{ expanded: isExpanded }"
@@ -75,13 +76,23 @@ export default {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
   height: 600px;
-  overflow: hidden; /* добавьте, чтобы текст не вылезал */
+  overflow: hidden;
 }
 
-.calendar-swipe:hover {
-  width: 480px;
+.img-center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}
+
+.calendar-swipe img {
+  width: 69px;
+  height: 69px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .calendar-swipe .date {
@@ -100,11 +111,8 @@ export default {
   margin-bottom: 10px;
 }
 
-.calendar-swipe img {
-  width: 69px;
-  height: 69px;
-  margin: auto 100px;
-  flex-shrink: 0;
+.calendar-swipe:hover {
+  width: 480px;
 }
 
 .expanded-content {
@@ -120,7 +128,6 @@ export default {
   text-align: left;
   color: #fff;
   pointer-events: none;
-  /* удалено: position, left, top, background, border-radius, box-shadow, z-index, height */
 }
 
 .expanded-content.expanded {

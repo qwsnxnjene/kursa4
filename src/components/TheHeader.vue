@@ -18,6 +18,7 @@
         <img src="../assets/profile.svg" alt="Аватар">
       </router-link>
     </div>
+    <router-link v-if="isAuthenticated && $store.state.userRole === 'admin'" to="/add-university" class="register-btn">Добавйть ВУЗ</router-link>
     <button class="login-btn" v-if="!isAuthenticated" @click="showLogin = true">Вход</button>
     <button class="register-btn" @click="showRegister = true" v-if="!isAuthenticated">Регйстрацйя</button>
     <button class="register-btn" v-else @click="logout">Выитй</button>

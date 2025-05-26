@@ -36,60 +36,40 @@ func SearchHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if city == "kazan" {
-		rows, err := db.Database.Query("SELECT id, name FROM kazan_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
-			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
+	var rows *sql.Rows
+	var err error
+	searchPattern := "%" + strings.ToLower(query) + "%"
+
+	switch city {
+	case "kazan":
+		rows, err = db.Database.Query(
+			"SELECT id, name FROM kazan_unis WHERE name LIKE ? OR LOWER(short_name) LIKE ? OR LOWER(name) LIKE ? LIMIT 3",
+			searchPattern, searchPattern, strings.ToLower(query)+"%")
+	case "moscow":
+		rows, err = db.Database.Query(
+			"SELECT id, name FROM moscow_unis WHERE LOWER(name) LIKE ? OR LOWER(short_name) LIKE ? LIMIT 3",
+			searchPattern, searchPattern)
+	case "petersburg":
+		rows, err = db.Database.Query(
+			"SELECT id, name FROM stp_unis WHERE LOWER(name) LIKE ? OR LOWER(short_name) LIKE ? LIMIT 3",
+			searchPattern, searchPattern)
+	default:
+		json.NewEncoder(w).Encode([]Uni{})
+		return
+	}
+	if err != nil {
+		json.NewEncoder(w).Encode([]Uni{})
+		return
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		name := Uni{}
+		err = rows.Scan(&name.ID, &name.Name)
 		if err != nil {
-			json.NewEncoder(w).Encode([]Uni{})
-			return
+			continue
 		}
-		defer rows.Close()
-
-		for rows.Next() {
-			name := Uni{}
-
-			err = rows.Scan(&name.ID, &name.Name)
-			if err != nil {
-				json.NewEncoder(w).Encode([]Uni{})
-			}
-			result = append(result, name)
-		}
-	} else if city == "moscow" {
-		rows, err := db.Database.Query("SELECT id, name FROM moscow_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
-			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
-		if err != nil {
-			json.NewEncoder(w).Encode([]Uni{})
-			return
-		}
-		defer rows.Close()
-
-		for rows.Next() {
-			name := Uni{}
-
-			err = rows.Scan(&name.ID, &name.Name)
-			if err != nil {
-				json.NewEncoder(w).Encode([]Uni{})
-			}
-			result = append(result, name)
-		}
-	} else if city == "petersburg" {
-		rows, err := db.Database.Query("SELECT id, name FROM stp_unis WHERE name LIKE :query OR name LIKE :queryStart LIMIT 3",
-			sql.Named("query", strings.ToLower(query)), sql.Named("queryStart", "%"+strings.ToLower(query)))
-		if err != nil {
-			json.NewEncoder(w).Encode([]Uni{})
-			return
-		}
-		defer rows.Close()
-
-		for rows.Next() {
-			name := Uni{}
-
-			err = rows.Scan(&name.ID, &name.Name)
-			if err != nil {
-				json.NewEncoder(w).Encode([]Uni{})
-			}
-			result = append(result, name)
-		}
+		result = append(result, name)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
